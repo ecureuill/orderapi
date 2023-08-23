@@ -1,4 +1,4 @@
-package com.ecureuill.ada.orderapi.infra.security;
+package com.ecureuill.ada.avanade.orderapi.infra.security;
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
