@@ -1,4 +1,4 @@
-package com.ecureuill.ada.avanade.orderapi.domain.user;
+package com.ecureuill.ada.avanade.orderapi.entity;
 
 import java.util.Collection;
 import java.util.List;

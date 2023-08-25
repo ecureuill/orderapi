@@ -1,4 +1,4 @@
-package com.ecureuill.ada.avanade.orderapi.infra.security;
+package com.ecureuill.ada.avanade.orderapi.service;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.ecureuill.ada.avanade.orderapi.domain.user.UserEntity;
+import com.ecureuill.ada.avanade.orderapi.entity.UserEntity;
 
 @Service
 public class TokenService {

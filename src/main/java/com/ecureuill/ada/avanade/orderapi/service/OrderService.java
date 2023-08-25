@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
 
-import com.ecureuill.ada.avanade.exceptions.InsufficientStockException;
-import com.ecureuill.ada.avanade.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.dto.OrderItemRecord;
 import com.ecureuill.ada.avanade.orderapi.dto.OrderRecord;
 import com.ecureuill.ada.avanade.orderapi.entity.OrderEntity;
 import com.ecureuill.ada.avanade.orderapi.entity.OrderItemEntity;
 import com.ecureuill.ada.avanade.orderapi.entity.ProductEntity;
+import com.ecureuill.ada.avanade.orderapi.exceptions.InsufficientStockException;
+import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.repository.OrderRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.ProductRepository;
 
@@ -26,10 +26,21 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final ProductService productService;
+    private final EmailService emailService;
 
-    @Transactional(rollbackOn = {NotFoundException.class, RuntimeException.class, InsufficientStockException.class})
     public Long create(OrderRecord order) throws NotFoundException, InsufficientStockException, RuntimeException{
         
+        var id = saveOrder(order);
+
+        emailService.sendEmail("logikasciuro@gmail.com", "Placed Order!", "A new order have been placed.\n\n Order id is: " + id + "\n\nThanks");
+
+        emailService.sendEmail("logikasciuro@gmail.com", "Order Completed!", "Your order has been completed successfully\n" + "Your order id is: " + id + "\n" + "Thanks!");
+
+        return id;
+    }
+
+    @Transactional(rollbackOn = {NotFoundException.class, RuntimeException.class, InsufficientStockException.class})    
+    private Long saveOrder(OrderRecord order) throws NotFoundException, InsufficientStockException, RuntimeException {
         OrderEntity orderEntity = new OrderEntity(null, new BigDecimal(0), LocalDateTime.now(), new ArrayList<OrderItemEntity>());
 
         for(OrderItemRecord item: order.items()){
@@ -44,12 +55,12 @@ public class OrderService {
 
             orderEntity.setTotalValue(orderEntity.getTotalValue().add(product.getPrice().multiply(new BigDecimal(item.quantity()))));
         }
-
-
         orderRepository.save(orderEntity);
+        
         return orderEntity.getId();
-    }
-    
+    };
+
+
     private void updateProductStock(ProductEntity product, int quantity) {
         if (product.getStock() < quantity) {
             throw new RuntimeException("Not enough stock");

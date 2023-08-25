@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.ecureuill.ada.avanade.exceptions.InsufficientStockException;
-import com.ecureuill.ada.avanade.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.dto.OrderRecord;
+import com.ecureuill.ada.avanade.orderapi.exceptions.InsufficientStockException;
+import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.service.OrderService;
 
 import lombok.RequiredArgsConstructor;

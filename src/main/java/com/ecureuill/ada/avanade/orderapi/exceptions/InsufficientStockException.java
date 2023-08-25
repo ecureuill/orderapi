@@ -1,4 +1,4 @@
-package com.ecureuill.ada.avanade.exceptions;
+package com.ecureuill.ada.avanade.orderapi.exceptions;
 
 public class InsufficientStockException extends Exception {
     public InsufficientStockException(String productName) {
