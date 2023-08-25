@@ -20,10 +20,12 @@ import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordUpdate;
 import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.service.CostumerService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/costumers")
+@SecurityRequirement(name = "bearer-key")
 public class CostumerController {
 
     @Autowired
@@ -32,7 +34,7 @@ public class CostumerController {
     @PostMapping
     public ResponseEntity<CostumerRecordDetail> create(@RequestBody @Valid CostumerRecordCreate record, UriComponentsBuilder uriBuilder) {
         var user = service.create(record);
-        var uri = uriBuilder.path("/users/{id}").buildAndExpand(user.id()).toUri();
+        var uri = uriBuilder.path("/costumers/{id}").buildAndExpand(user.id()).toUri();
         return ResponseEntity.created(uri).body(user);
     }
 

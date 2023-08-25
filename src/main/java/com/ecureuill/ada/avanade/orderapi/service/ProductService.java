@@ -5,10 +5,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.ecureuill.ada.avanade.orderapi.api.DummyJsonClient;
+import com.ecureuill.ada.avanade.orderapi.api.ProductList;
 import com.ecureuill.ada.avanade.orderapi.dto.ProductRecord;
 import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
-import com.ecureuill.ada.avanade.orderapi.infra.api.DummyJsonClient;
-import com.ecureuill.ada.avanade.orderapi.infra.api.ProductList;
 import com.ecureuill.ada.avanade.orderapi.repository.ProductRepository;
 
 import lombok.RequiredArgsConstructor;

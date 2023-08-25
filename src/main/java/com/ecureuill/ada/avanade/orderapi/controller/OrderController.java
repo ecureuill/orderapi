@@ -12,11 +12,13 @@ import com.ecureuill.ada.avanade.orderapi.exceptions.InsufficientStockException;
 import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.service.OrderService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
+@SecurityRequirement(name = "bearer-key")
 public class OrderController {
     
     private final OrderService service;

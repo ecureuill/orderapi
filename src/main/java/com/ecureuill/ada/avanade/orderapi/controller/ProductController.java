@@ -12,6 +12,7 @@ import com.ecureuill.ada.avanade.orderapi.dto.ProductRecord;
 import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.service.ProductService;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,6 +23,7 @@ public class ProductController {
     private final ProductService service;
 
     @GetMapping("/fetch")
+    @SecurityRequirement(name = "bearer-key")
     public ResponseEntity<String>  fetchAllProducts() {
         service.fetchAndSave();
         return ResponseEntity.ok().build();
