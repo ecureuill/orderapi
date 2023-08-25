@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
+import com.ecureuill.ada.avanade.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.dto.ProductRecord;
-import com.ecureuill.ada.avanade.orderapi.infra.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.infra.api.DummyJsonClient;
 import com.ecureuill.ada.avanade.orderapi.infra.api.ProductList;
 import com.ecureuill.ada.avanade.orderapi.repository.ProductRepository;

@@ -1,4 +1,4 @@
-package com.ecureuill.ada.avanade.orderapi.infra;
+package com.ecureuill.ada.avanade.exceptions;
 
 public class NotFoundException extends Exception {
 

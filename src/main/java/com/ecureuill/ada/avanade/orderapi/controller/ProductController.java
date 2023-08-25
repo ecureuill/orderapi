@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ecureuill.ada.avanade.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.dto.ProductRecord;
-import com.ecureuill.ada.avanade.orderapi.infra.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.service.ProductService;
 
 import lombok.RequiredArgsConstructor;

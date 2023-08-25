@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.ecureuill.ada.avanade.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordCreate;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordDetail;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordUpdate;
-import com.ecureuill.ada.avanade.orderapi.infra.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.service.CostumerService;
 
 import jakarta.validation.Valid;
