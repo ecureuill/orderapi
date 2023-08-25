@@ -1,5 +1,6 @@
 package com.ecureuill.ada.avanade.orderapi.entity;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import jakarta.persistence.Entity;
@@ -18,15 +19,15 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = "id")
 public class ProductEntity {
     @Id
-    private float id;
+    private Long id;
     private String title;
     private String description;
-    private float price;
-    private float discountPercentage;
-    private float rating;
-    private float stock;
+    private BigDecimal price;
+    private BigDecimal discountPercentage;
+    private Float rating;
+    private Integer stock;
     private String brand;
     private String category;
     private String thumbnail;
-    ArrayList<String> images = new ArrayList<String> ();
+    private ArrayList<String> images = new ArrayList<String> ();
 }
