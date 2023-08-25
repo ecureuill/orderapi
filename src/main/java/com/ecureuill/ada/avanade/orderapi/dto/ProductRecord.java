@@ -32,4 +32,20 @@ public record ProductRecord(
             product.getImages()
         );
     }
+
+    public ProductEntity toEntity(Long id) {
+        return new ProductEntity(
+            id,
+            title,
+            description,
+            price,
+            discountPercentage,
+            rating,
+            stock,
+            brand,
+            category,
+            thumbnail,
+            images
+        );
+    }
 }
