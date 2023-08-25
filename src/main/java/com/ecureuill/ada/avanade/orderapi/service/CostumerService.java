@@ -5,7 +5,6 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -13,6 +12,7 @@ import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordCreate;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordDetail;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordUpdate;
 import com.ecureuill.ada.avanade.orderapi.entity.CostumerEntity;
+import com.ecureuill.ada.avanade.orderapi.infra.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.repository.CostumerRepository;
 
 @Service
@@ -33,7 +33,7 @@ public class CostumerService {
     public CostumerRecordDetail findById(Long id) throws NotFoundException {
         Optional<CostumerEntity> user = repository.findById(id);
         if (user.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException(String.format("findById(%s)", id));
         }
         
         return new CostumerRecordDetail(user.get());
@@ -42,7 +42,7 @@ public class CostumerService {
     public CostumerRecordDetail update(Long id, CostumerRecordUpdate record) throws NotFoundException {
         Optional<CostumerEntity> user = repository.findById(id);
         if (user.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException(String.format("findById(%s)", id));
         }
         
         CostumerEntity updatedUser = record.toEntity(user.get().getId());
@@ -54,7 +54,7 @@ public class CostumerService {
     public void delete(Long id) throws NotFoundException {
         Optional<CostumerEntity> user = repository.findById(id);
         if (user.isEmpty()) {
-            throw new NotFoundException();
+            throw new NotFoundException(String.format("findById(%s)", id));
         }
         repository.delete(user.get());
     }

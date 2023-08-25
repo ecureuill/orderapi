@@ -3,7 +3,6 @@ package com.ecureuill.ada.avanade.orderapi.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordCreate;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordDetail;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordUpdate;
+import com.ecureuill.ada.avanade.orderapi.infra.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.service.CostumerService;
 
 import jakarta.validation.Valid;
