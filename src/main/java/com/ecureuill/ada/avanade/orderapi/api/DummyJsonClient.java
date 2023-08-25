@@ -1,4 +1,4 @@
-package com.ecureuill.ada.avanade.orderapi.infra.api;
+package com.ecureuill.ada.avanade.orderapi.api;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;

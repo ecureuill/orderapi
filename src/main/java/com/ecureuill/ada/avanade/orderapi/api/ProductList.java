@@ -1,4 +1,4 @@
-package com.ecureuill.ada.avanade.orderapi.infra.api;
+package com.ecureuill.ada.avanade.orderapi.api;
 
 import java.util.List;
 
