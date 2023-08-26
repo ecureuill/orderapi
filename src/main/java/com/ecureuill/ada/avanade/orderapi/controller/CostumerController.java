@@ -4,6 +4,9 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +27,7 @@ import com.ecureuill.ada.avanade.orderapi.service.CostumerService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/costumers")
@@ -34,32 +38,30 @@ public class CostumerController {
     private CostumerService service;
 
     @PostMapping
-    public ResponseEntity<CostumerRecordDetail> create(@RequestBody @Valid CostumerRecordCreate record, @RequestHeader (name="Authorization") String token, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<CostumerRecordDetail> create(@RequestBody @Valid CostumerRecordCreate record, UriComponentsBuilder uriBuilder) {
         try {
-            var user = service.create(record, token);
+            var user = service.create(record);
             var uri = uriBuilder.path("/costumers/{id}").buildAndExpand(user.id()).toUri();
-        
+          
             return ResponseEntity.created(uri).body(user);
-        
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(403).build();
-        
+            
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+            // TODO: handle exception
         }
+        return null;
     }
 
     @GetMapping
-    public ResponseEntity<List<CostumerRecordDetail>> findAll(@RequestHeader (name="Authorization") String token){
-        try {
-            return ResponseEntity.ok(service.findAll(token));
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(403).build();
-        }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<CostumerRecordDetail>> findAll(){
+        return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CostumerRecordDetail> findById(@PathVariable Long id, @RequestHeader (name="Authorization") String token) {
+    public ResponseEntity<CostumerRecordDetail> findById(@PathVariable Long id) {
         try {
-            return ResponseEntity.ok(service.findById(id, token));
+            return ResponseEntity.ok(service.findById(id));
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (UnauthorizedException e) {
@@ -68,9 +70,9 @@ public class CostumerController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CostumerRecordDetail> update(@PathVariable Long id, @RequestBody @Valid CostumerRecordUpdate record, @RequestHeader (name="Authorization") String token) {
+    public ResponseEntity<CostumerRecordDetail> update(@PathVariable Long id, @RequestBody @Valid CostumerRecordUpdate record) {
         try {
-            return ResponseEntity.ok(service.update(id, record, token));
+            return ResponseEntity.ok(service.update(id, record));
         } catch (NotFoundException e) {
             return ResponseEntity.notFound().build();
         } catch (UnauthorizedException e) {
@@ -79,6 +81,7 @@ public class CostumerController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         try {
             service.delete(id);

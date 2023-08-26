@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.tomcat.util.http.parser.Authorization;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
@@ -15,6 +16,7 @@ import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.exceptions.UnauthorizedException;
 import com.ecureuill.ada.avanade.orderapi.repository.CostumerRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.UserRepository;
+import com.ecureuill.ada.avanade.orderapi.utils.AuthenticatedUser;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,46 +26,38 @@ public class CostumerService {
     
     private final CostumerRepository repository;
     private final UserRepository userRepository;
-    private final TokenService tokenService;
 
-    public CostumerRecordDetail create(CostumerRecordCreate record, String token) throws UnauthorizedException {
-        checkResourceOwner(record.username(), token);
-
-        var user = userRepository.findByUsername(record.username());
+    public CostumerRecordDetail create(CostumerRecordCreate record) {
+        var user = userRepository.findByUsername(AuthenticatedUser.getUsername());
         CostumerEntity costumer = record.toEntity();
         costumer.setUser(user.get());
         costumer = repository.save(costumer);
         return new CostumerRecordDetail(costumer);
     }
 
-    public List<CostumerRecordDetail> findAll(String token) throws UnauthorizedException{
-
-        checkAdmin(token);
-
+    public List<CostumerRecordDetail> findAll(){
         return repository.findAll().stream().map(CostumerRecordDetail::new).collect(Collectors.toList());
     }
 
-    public CostumerRecordDetail findById(Long id, String token) throws NotFoundException, UnauthorizedException {
+    public CostumerRecordDetail findById(Long id) throws UnauthorizedException, NotFoundException {
         Optional<CostumerEntity> user = repository.findById(id);
         
         if (user.isEmpty()) {
             throw new NotFoundException(String.format("findById(%s)", id));
         }
         
-        System.out.println(user.get());
-
-        checkResourceOwner(user.get().getUser().getUsername(), token);
-
+        AuthorizationService.isAuthenticatedUserOwnerOfResource(user.get().getUser().getUsername());
+        
         return new CostumerRecordDetail(user.get());
     }
 
-    public CostumerRecordDetail update(Long id, CostumerRecordUpdate record, String token) throws NotFoundException, UnauthorizedException {
+    public CostumerRecordDetail update(Long id, CostumerRecordUpdate record) throws NotFoundException, UnauthorizedException {
         Optional<CostumerEntity> user = repository.findById(id);
         if (user.isEmpty()) {
             throw new NotFoundException(String.format("findById(%s)", id));
         }
         
-        checkResourceOwner(user.get().getUser().getUsername(), token);
+        AuthorizationService.isAuthenticatedUserOwnerOfResource(user.get().getUser().getUsername());
 
         CostumerEntity updatedUser = record.toEntity(user.get().getId());
         repository.save(updatedUser);
@@ -79,26 +73,4 @@ public class CostumerService {
 
         repository.delete(user.get());
     }
-
-    private void checkResourceOwner(String username, String token) throws UnauthorizedException {
-        var jwt = token.replace("Bearer ", "");
-        var authenticatedUser = tokenService.getSubject(jwt);
-
-        if(!authenticatedUser.equals(username))
-        {
-            throw new UnauthorizedException();
-        }
-    }
-
-    private void checkAdmin(String token) throws UnauthorizedException {
-        var jwt = token.replace("Bearer ", "");
-        var authenticatedUser = tokenService.getSubject(jwt);
-
-        if(!authenticatedUser.equals("admin"))
-        {
-            throw new UnauthorizedException();
-        }
-    }
-
-
 }

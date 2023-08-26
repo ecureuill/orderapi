@@ -18,6 +18,7 @@ import com.ecureuill.ada.avanade.orderapi.repository.CostumerRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.OrderRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.ProductRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.UserRepository;
+import com.ecureuill.ada.avanade.orderapi.utils.AuthenticatedUser;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,17 +31,17 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final EmailService emailService;
-    private final TokenService tokenService;
     private final UserRepository userRepository;
     private final CostumerRepository costumerRepository;
 
-    public Long create(OrderRecord order, String token) throws NotFoundException, InsufficientStockException, RuntimeException{
+    public Long create(OrderRecord order) throws Exception{
         
-        var jwt = token.replace("Bearer ", "");
-        var authenticatedUser = tokenService.getSubject(jwt);
+        var user = userRepository.findByUsername(AuthenticatedUser.getUsername());
+        var customer = costumerRepository.findByUserId(user.get().getId());
 
-        var user = userRepository.findByUsername(authenticatedUser);
-        var customer = costumerRepository.findByUserid(user.get().getId());
+        if(customer.isEmpty()){
+            throw new Exception("You need to register you name and address first (create a customer)");
+        }
 
         var id = saveOrder(order, customer.get());
 
@@ -73,9 +74,9 @@ public class OrderService {
     };
 
 
-    private void updateProductStock(ProductEntity product, int quantity) {
+    private void updateProductStock(ProductEntity product, int quantity) throws InsufficientStockException {
         if (product.getStock() < quantity) {
-            throw new RuntimeException("Not enough stock");
+            throw new InsufficientStockException("Not enough stock");
         } else {
             product.setStock(product.getStock() - quantity);
             productRepository.save(product);

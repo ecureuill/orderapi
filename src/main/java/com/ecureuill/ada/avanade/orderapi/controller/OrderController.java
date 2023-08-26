@@ -25,10 +25,10 @@ public class OrderController {
     private final OrderService service;
 
     @PostMapping
-    public ResponseEntity<Object> createOrder(@RequestBody OrderRecord record, UriComponentsBuilder uriBuilder, @RequestHeader (name="Authorization") String token) {
+    public ResponseEntity<Object> createOrder(@RequestBody OrderRecord record, UriComponentsBuilder uriBuilder) throws Exception {
         Long orderId = (long) -1;
         try {
-            orderId = service.create(record, token);
+            orderId = service.create(record);
         } catch (NotFoundException e) {
             return ResponseEntity.badRequest().body("product not found");
         } catch (InsufficientStockException e) {

@@ -18,9 +18,7 @@ public record CostumerRecordCreate(
     String email,
     @NotNull
     @Valid
-    AddressRecord address,
-    @NotNull
-    String username
+    AddressRecord address
 ) {
 
     public CostumerEntity toEntity() {

@@ -9,6 +9,6 @@ import com.ecureuill.ada.avanade.orderapi.entity.CostumerEntity;
 
 public interface CostumerRepository extends JpaRepository<CostumerEntity, Long>{
 
-    Optional<CostumerEntity> findByUserid(UUID id);
+    Optional<CostumerEntity> findByUserId(UUID id);
 
 }
