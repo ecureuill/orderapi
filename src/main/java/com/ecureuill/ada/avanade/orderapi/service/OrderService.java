@@ -8,13 +8,16 @@ import org.springframework.stereotype.Service;
 
 import com.ecureuill.ada.avanade.orderapi.dto.OrderItemRecord;
 import com.ecureuill.ada.avanade.orderapi.dto.OrderRecord;
+import com.ecureuill.ada.avanade.orderapi.entity.CostumerEntity;
 import com.ecureuill.ada.avanade.orderapi.entity.OrderEntity;
 import com.ecureuill.ada.avanade.orderapi.entity.OrderItemEntity;
 import com.ecureuill.ada.avanade.orderapi.entity.ProductEntity;
 import com.ecureuill.ada.avanade.orderapi.exceptions.InsufficientStockException;
 import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
+import com.ecureuill.ada.avanade.orderapi.repository.CostumerRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.OrderRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.ProductRepository;
+import com.ecureuill.ada.avanade.orderapi.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,21 +30,30 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final ProductService productService;
     private final EmailService emailService;
+    private final TokenService tokenService;
+    private final UserRepository userRepository;
+    private final CostumerRepository costumerRepository;
 
-    public Long create(OrderRecord order) throws NotFoundException, InsufficientStockException, RuntimeException{
+    public Long create(OrderRecord order, String token) throws NotFoundException, InsufficientStockException, RuntimeException{
         
-        var id = saveOrder(order);
+        var jwt = token.replace("Bearer ", "");
+        var authenticatedUser = tokenService.getSubject(jwt);
+
+        var user = userRepository.findByUsername(authenticatedUser);
+        var customer = costumerRepository.findByUserid(user.get().getId());
+
+        var id = saveOrder(order, customer.get());
 
         emailService.sendEmail("logikasciuro@gmail.com", "Placed Order!", "A new order have been placed.\n\n Order id is: " + id + "\n\nThanks");
 
-        emailService.sendEmail("logikasciuro@gmail.com", "Order Completed!", "Your order has been completed successfully\n" + "Your order id is: " + id + "\n" + "Thanks!");
+        emailService.sendEmail(customer.get().getEmail(), "Order Completed!", "Hello " + customer.get().getName() + "Your order has been completed successfully\n" + "Your order id is: " + id + "\n" + "Thanks!");
 
         return id;
     }
 
     @Transactional(rollbackOn = {NotFoundException.class, RuntimeException.class, InsufficientStockException.class})    
-    private Long saveOrder(OrderRecord order) throws NotFoundException, InsufficientStockException, RuntimeException {
-        OrderEntity orderEntity = new OrderEntity(null, new BigDecimal(0), LocalDateTime.now(), new ArrayList<OrderItemEntity>());
+    private Long saveOrder(OrderRecord order, CostumerEntity customer) throws NotFoundException, InsufficientStockException, RuntimeException {
+        OrderEntity orderEntity = new OrderEntity(null, new BigDecimal(0), LocalDateTime.now(), new ArrayList<OrderItemEntity>(), customer);
 
         for(OrderItemRecord item: order.items()){
             ProductEntity product = productService.findById(item.productId()).toEntity(item.productId());

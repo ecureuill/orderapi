@@ -31,6 +31,6 @@ public class CostumerEntity {
     private AddressEntity address;
     
     @OneToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userid")
     private UserEntity user;    
 }
