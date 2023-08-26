@@ -44,6 +44,8 @@ public class SecurityConfig {
 
                 .requestMatchers("/products/fetch").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/users").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/constumers").hasRole("ADMIN")
+                                
                 .anyRequest().authenticated())
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
         return httpSecurity.build();

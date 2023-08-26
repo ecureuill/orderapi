@@ -22,7 +22,7 @@ public record CostumerRecordUpdate(
 ) {
 
     public CostumerEntity toEntity(Long id) {
-        return new CostumerEntity(id, name, cpf, email, new AddressEntity(address));
+        return new CostumerEntity(id, name, cpf, email, new AddressEntity(address), null);
     }
 
 }

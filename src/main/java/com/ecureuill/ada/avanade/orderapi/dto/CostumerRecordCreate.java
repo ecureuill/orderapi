@@ -18,11 +18,13 @@ public record CostumerRecordCreate(
     String email,
     @NotNull
     @Valid
-    AddressRecord address
+    AddressRecord address,
+    @NotNull
+    String username
 ) {
 
     public CostumerEntity toEntity() {
-        return new CostumerEntity(null, name, cpf, email, new AddressEntity(address));
+        return new CostumerEntity(null, name, cpf, email, new AddressEntity(address), null);
     }
     
 }
