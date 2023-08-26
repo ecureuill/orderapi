@@ -26,18 +26,8 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Object> createOrder(@RequestBody OrderRecord record, UriComponentsBuilder uriBuilder) throws Exception {
-        Long orderId = (long) -1;
-        try {
-            orderId = service.create(record);
-        } catch (NotFoundException e) {
-            return ResponseEntity.badRequest().body("product not found");
-        } catch (InsufficientStockException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        } catch (RuntimeException e) {
-            return ResponseEntity.internalServerError().build();
-        }
+        Long orderId = service.create(record);
         var uri = uriBuilder.path("/orders/{id}").buildAndExpand(orderId).toUri();
-        
         return ResponseEntity.created(uri).build();
     }
 }

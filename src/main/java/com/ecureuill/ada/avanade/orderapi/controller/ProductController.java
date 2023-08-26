@@ -40,12 +40,7 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductRecord> getProduct(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(service.findById(id));
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<ProductRecord> getProduct(@PathVariable Long id) throws NotFoundException {
+        return ResponseEntity.ok(service.findById(id));
     }
 }

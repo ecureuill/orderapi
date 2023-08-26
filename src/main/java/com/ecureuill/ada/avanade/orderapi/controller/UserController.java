@@ -33,13 +33,9 @@ public class UserController {
     private final UserService service;
 
     @PostMapping
-    public ResponseEntity<String> register(@RequestBody @Valid UserRecord record, UriComponentsBuilder uriBuilder) {
-        try {
-            service.create(record);
-        } catch (UniqueKeyException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-
+    public ResponseEntity<String> register(@RequestBody @Valid UserRecord record, UriComponentsBuilder uriBuilder) throws UniqueKeyException {
+        service.create(record);
+        
         var uri = uriBuilder.path("/users/{username}").buildAndExpand(record.username()).toUri();
 
         return ResponseEntity.created(uri).build();
@@ -52,35 +48,21 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserRecord> getUser(@PathVariable String username) throws UnauthorizedException {
-        try {
-            return ResponseEntity.ok(service.findByUsername(username));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<UserRecord> getUser(@PathVariable String username) throws UnauthorizedException, NotFoundException {
+        return ResponseEntity.ok(service.findByUsername(username));
     }  
 
     @PutMapping("/{username}")
-    public ResponseEntity<String> updateUser(@PathVariable String username, @RequestBody @Valid UserRecord record) throws Exception {
-        try {
-            service.update(username, record);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<String> updateUser(@PathVariable String username, @RequestBody @Valid UserRecord record) throws NotFoundException, Exception {
+        service.update(username, record);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{username}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<String> deleteUser(@PathVariable String username){
-        try {
-            service.delete(username);
-            return ResponseEntity.ok().build();
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<String> deleteUser(@PathVariable String username) throws NotFoundException{
+        service.delete(username);
+        return ResponseEntity.ok().build();
     }
     
 }

@@ -39,17 +39,10 @@ public class CostumerController {
 
     @PostMapping
     public ResponseEntity<CostumerRecordDetail> create(@RequestBody @Valid CostumerRecordCreate record, UriComponentsBuilder uriBuilder) {
-        try {
-            var user = service.create(record);
-            var uri = uriBuilder.path("/costumers/{id}").buildAndExpand(user.id()).toUri();
-          
-            return ResponseEntity.created(uri).body(user);
-            
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            // TODO: handle exception
-        }
-        return null;
+        var user = service.create(record);
+        var uri = uriBuilder.path("/costumers/{id}").buildAndExpand(user.id()).toUri();
+        
+        return ResponseEntity.created(uri).body(user);
     }
 
     @GetMapping
@@ -59,35 +52,19 @@ public class CostumerController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CostumerRecordDetail> findById(@PathVariable Long id) {
-        try {
+    public ResponseEntity<CostumerRecordDetail> findById(@PathVariable Long id) throws UnauthorizedException, NotFoundException {
             return ResponseEntity.ok(service.findById(id));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(403).build();
-        }
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CostumerRecordDetail> update(@PathVariable Long id, @RequestBody @Valid CostumerRecordUpdate record) {
-        try {
-            return ResponseEntity.ok(service.update(id, record));
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        } catch (UnauthorizedException e) {
-            return ResponseEntity.status(403).build();
-        }
+    public ResponseEntity<CostumerRecordDetail> update(@PathVariable Long id, @RequestBody @Valid CostumerRecordUpdate record) throws NotFoundException, UnauthorizedException {
+        return ResponseEntity.ok(service.update(id, record));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        try {
-            service.delete(id);
-        } catch (NotFoundException e) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<Void> delete(@PathVariable Long id) throws NotFoundException {
+        service.delete(id);
         return ResponseEntity.noContent().build();
     }
 }
