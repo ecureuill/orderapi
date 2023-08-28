@@ -1,7 +1,7 @@
 package com.ecureuill.ada.avanade.orderapi.dto;
 
 import com.ecureuill.ada.avanade.orderapi.entity.AddressEntity;
-import com.ecureuill.ada.avanade.orderapi.entity.CostumerEntity;
+import com.ecureuill.ada.avanade.orderapi.entity.CustomerEntity;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -21,8 +21,8 @@ public record CostumerRecordUpdate(
     AddressRecord address
 ) {
 
-    public CostumerEntity toEntity(Long id) {
-        return new CostumerEntity(id, name, cpf, email, new AddressEntity(address), null);
+    public CustomerEntity toEntity(Long id) {
+        return new CustomerEntity(id, name, cpf, email, new AddressEntity(address), null);
     }
 
 }

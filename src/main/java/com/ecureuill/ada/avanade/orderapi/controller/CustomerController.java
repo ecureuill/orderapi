@@ -16,44 +16,44 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordCreate;
-import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordDetail;
+import com.ecureuill.ada.avanade.orderapi.dto.CustomerRecordDetail;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordUpdate;
 import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.exceptions.UnauthorizedException;
-import com.ecureuill.ada.avanade.orderapi.service.CostumerService;
+import com.ecureuill.ada.avanade.orderapi.service.CustomerService;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/costumers")
+@RequestMapping("/customers")
 @SecurityRequirement(name = "bearer-key")
-public class CostumerController {
+public class CustomerController {
 
     @Autowired
-    private CostumerService service;
+    private CustomerService service;
 
     @PostMapping
-    public ResponseEntity<CostumerRecordDetail> create(@RequestBody @Valid CostumerRecordCreate record, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<CustomerRecordDetail> create(@RequestBody @Valid CostumerRecordCreate record, UriComponentsBuilder uriBuilder) {
         var user = service.create(record);
-        var uri = uriBuilder.path("/costumers/{id}").buildAndExpand(user.id()).toUri();
+        var uri = uriBuilder.path("/customers/{id}").buildAndExpand(user.id()).toUri();
         
         return ResponseEntity.created(uri).body(user);
     }
 
     @GetMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<List<CostumerRecordDetail>> findAll(){
+    public ResponseEntity<List<CustomerRecordDetail>> findAll(){
         return ResponseEntity.ok(service.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CostumerRecordDetail> findById(@PathVariable Long id) throws UnauthorizedException, NotFoundException {
+    public ResponseEntity<CustomerRecordDetail> findById(@PathVariable Long id) throws UnauthorizedException, NotFoundException {
         return ResponseEntity.ok(service.findById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CostumerRecordDetail> update(@PathVariable Long id, @RequestBody @Valid CostumerRecordUpdate record) throws NotFoundException, UnauthorizedException {
+    public ResponseEntity<CustomerRecordDetail> update(@PathVariable Long id, @RequestBody @Valid CostumerRecordUpdate record) throws NotFoundException, UnauthorizedException {
         return ResponseEntity.ok(service.update(id, record));
     }
 

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Service;
 
 import com.ecureuill.ada.avanade.orderapi.dto.OrderItemRecord;
 import com.ecureuill.ada.avanade.orderapi.dto.OrderRecord;
-import com.ecureuill.ada.avanade.orderapi.entity.CostumerEntity;
+import com.ecureuill.ada.avanade.orderapi.entity.CustomerEntity;
 import com.ecureuill.ada.avanade.orderapi.entity.OrderEntity;
 import com.ecureuill.ada.avanade.orderapi.entity.OrderItemEntity;
 import com.ecureuill.ada.avanade.orderapi.entity.ProductEntity;
 import com.ecureuill.ada.avanade.orderapi.exceptions.InsufficientStockException;
 import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
-import com.ecureuill.ada.avanade.orderapi.repository.CostumerRepository;
+import com.ecureuill.ada.avanade.orderapi.repository.CustomerRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.OrderRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.ProductRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.UserRepository;
@@ -32,7 +32,7 @@ public class OrderService {
     private final ProductService productService;
     private final EmailService emailService;
     private final UserRepository userRepository;
-    private final CostumerRepository costumerRepository;
+    private final CustomerRepository costumerRepository;
 
     public Long create(OrderRecord order) throws Exception{
         
@@ -53,7 +53,7 @@ public class OrderService {
     }
 
     @Transactional(rollbackOn = {NotFoundException.class, RuntimeException.class, InsufficientStockException.class})    
-    private Long saveOrder(OrderRecord order, CostumerEntity customer) throws NotFoundException, InsufficientStockException, RuntimeException {
+    private Long saveOrder(OrderRecord order, CustomerEntity customer) throws NotFoundException, InsufficientStockException, RuntimeException {
         OrderEntity orderEntity = new OrderEntity(null, new BigDecimal(0), LocalDateTime.now(), new ArrayList<OrderItemEntity>(), customer);
 
         for(OrderItemRecord item: order.items()){

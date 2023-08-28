@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordCreate;
-import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordDetail;
+import com.ecureuill.ada.avanade.orderapi.dto.CustomerRecordDetail;
 import com.ecureuill.ada.avanade.orderapi.dto.CostumerRecordUpdate;
-import com.ecureuill.ada.avanade.orderapi.entity.CostumerEntity;
+import com.ecureuill.ada.avanade.orderapi.entity.CustomerEntity;
 import com.ecureuill.ada.avanade.orderapi.exceptions.NotFoundException;
 import com.ecureuill.ada.avanade.orderapi.exceptions.UnauthorizedException;
-import com.ecureuill.ada.avanade.orderapi.repository.CostumerRepository;
+import com.ecureuill.ada.avanade.orderapi.repository.CustomerRepository;
 import com.ecureuill.ada.avanade.orderapi.repository.UserRepository;
 import com.ecureuill.ada.avanade.orderapi.utils.AuthenticatedUser;
 
@@ -21,25 +21,25 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class CostumerService {
+public class CustomerService {
     
-    private final CostumerRepository repository;
+    private final CustomerRepository repository;
     private final UserRepository userRepository;
 
-    public CostumerRecordDetail create(CostumerRecordCreate record) {
+    public CustomerRecordDetail create(CostumerRecordCreate record) {
         var user = userRepository.findByUsername(AuthenticatedUser.getUsername());
-        CostumerEntity costumer = record.toEntity();
+        CustomerEntity costumer = record.toEntity();
         costumer.setUser(user.get());
         costumer = repository.save(costumer);
-        return new CostumerRecordDetail(costumer);
+        return new CustomerRecordDetail(costumer);
     }
 
-    public List<CostumerRecordDetail> findAll(){
-        return repository.findAll().stream().map(CostumerRecordDetail::new).collect(Collectors.toList());
+    public List<CustomerRecordDetail> findAll(){
+        return repository.findAll().stream().map(CustomerRecordDetail::new).collect(Collectors.toList());
     }
 
-    public CostumerRecordDetail findById(Long id) throws UnauthorizedException, NotFoundException {
-        Optional<CostumerEntity> user = repository.findById(id);
+    public CustomerRecordDetail findById(Long id) throws UnauthorizedException, NotFoundException {
+        Optional<CustomerEntity> user = repository.findById(id);
         
         if (user.isEmpty()) {
             throw new NotFoundException(String.format("findById(%s)", id));
@@ -47,25 +47,25 @@ public class CostumerService {
         
         AuthorizationService.isAuthenticatedUserOwnerOfResource(user.get().getUser().getUsername());
         
-        return new CostumerRecordDetail(user.get());
+        return new CustomerRecordDetail(user.get());
     }
 
-    public CostumerRecordDetail update(Long id, CostumerRecordUpdate record) throws NotFoundException, UnauthorizedException {
-        Optional<CostumerEntity> user = repository.findById(id);
+    public CustomerRecordDetail update(Long id, CostumerRecordUpdate record) throws NotFoundException, UnauthorizedException {
+        Optional<CustomerEntity> user = repository.findById(id);
         if (user.isEmpty()) {
             throw new NotFoundException(String.format("findById(%s)", id));
         }
         
         AuthorizationService.isAuthenticatedUserOwnerOfResource(user.get().getUser().getUsername());
 
-        CostumerEntity updatedUser = record.toEntity(user.get().getId());
+        CustomerEntity updatedUser = record.toEntity(user.get().getId());
         repository.save(updatedUser);
-        return new CostumerRecordDetail(updatedUser);
+        return new CustomerRecordDetail(updatedUser);
     }
 
     @DeleteMapping("/{id}")
     public void delete(Long id) throws NotFoundException {
-        Optional<CostumerEntity> user = repository.findById(id);
+        Optional<CustomerEntity> user = repository.findById(id);
         if (user.isEmpty()) {
             throw new NotFoundException(String.format("findById(%s)", id));
         }

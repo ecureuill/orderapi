@@ -1,8 +1,8 @@
 package com.ecureuill.ada.avanade.orderapi.dto;
 
-import com.ecureuill.ada.avanade.orderapi.entity.CostumerEntity;
+import com.ecureuill.ada.avanade.orderapi.entity.CustomerEntity;
 
-public record CostumerRecordDetail(
+public record CustomerRecordDetail(
     Long id, 
     String name,
     String cpf,
@@ -10,7 +10,7 @@ public record CostumerRecordDetail(
     AddressRecord address
 )  {
 
-    public CostumerRecordDetail(CostumerEntity user) {
+    public CustomerRecordDetail(CustomerEntity user) {
         this(user.getId(), user.getName(), user.getCpf(), user.getEmail() , new AddressRecord(user.getAddress()));
     }
     
